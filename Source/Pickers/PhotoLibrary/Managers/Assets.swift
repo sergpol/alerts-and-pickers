@@ -30,7 +30,9 @@ public struct Assets {
         }
         
         DispatchQueue.global(qos: .userInitiated).async {
-            let fetchResult = PHAsset.fetchAssets(with: .image, options: PHFetchOptions())
+            let options = PHFetchOptions()
+            options.predicate = NSPredicate(format: "mediaType == %d or mediaType == %d", argumentArray: [PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue])
+            let fetchResult = PHAsset.fetchAssets(with: options)
             
             if fetchResult.count > 0 {
                 var assets = [PHAsset]()
@@ -58,7 +60,7 @@ public struct Assets {
         let imageManager = PHImageManager.default()
         
         let requestOptions = PHImageRequestOptions()
-        requestOptions.deliveryMode = .highQualityFormat
+        requestOptions.deliveryMode = .opportunistic
         requestOptions.resizeMode = .exact
         requestOptions.isNetworkAccessAllowed = true
         
